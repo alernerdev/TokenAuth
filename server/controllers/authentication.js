@@ -7,6 +7,7 @@ function tokenForUser(user) {
     const timestamp = new Date().getTime();
     // using user.id instead of email.  Email may change
     // subject and issued at time
+    console.log(user);
     return jwt.encode({sub: user.id, iat:timestamp}, keys.secret);
 }
 
@@ -39,3 +40,10 @@ exports.signup = function(req, res, next) {
     });
   });
 };
+
+exports.signin = function(req, res, next) {
+  // user had already authed email/pwd; just need to produce token
+  // user is hanging off the request because passport LocalStrategy
+  // put it there
+  res.send({token: tokenForUser(req.user)});
+}

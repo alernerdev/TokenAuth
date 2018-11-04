@@ -27,6 +27,16 @@ userSchema.pre('save', function(next) {
     });
 });
 
+// all instances of user objects have access to these methods
+userSchema.methods.comparePassword = function(candidatePassword, callback) {
+    // bcrypt does salting/hashing of candidatePassword before comparison
+    bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
+        if (err) return callback(err);
+
+        callback(err, isMatch);
+    });
+}
+
 // Creaate the model class
 const ModelClass = mongoose.model('user', userSchema);
 

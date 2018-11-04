@@ -9,8 +9,23 @@ const keys = require("../config/keys");
 // have to tell the library where to pickup username from
 const localOptions = {usernameField: 'email'};
 const localLogin = new LocalStrategy(localOptions, function(email, password, done) {
-  // verify username / password
+  // verify email / password
   // if confirmed, call done with user; otherwise call done with false
+  User.findOne({email}, function(err, user) {
+    if (err) return done(err, false);
+
+    if (!user) return done(null, false);
+
+    // compare passwords
+    user.comparePassword(password, function(err, isMatch) {
+      if (err) return done(err);
+
+      if (!isMatch) return done(null, false);
+
+      // passing user into done hangs it off the request
+      return done(null, user);
+    });
+  })
 });
 
 const jwtOptions = {
@@ -39,3 +54,4 @@ const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) {
 
 // tell passport to use the above strategy
 passport.use(jwtLogin);
+passport.use(localLogin);
