@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const chalk = require('chalk');
+const cors = require('cors');
 
 const keys = require("./config/keys");
 const DB = require("./db.js");
@@ -20,6 +21,7 @@ const app = express();
 
 // App setup
 app.use(morgan('combined'));
+app.use(cors()); // default config. Accept connections from anyone
 app.use(bodyParser.json({type: '*/*'}));
 router(app);
 
